@@ -24,7 +24,7 @@
    SOFTWARE.
    ```})
 
-# TODO: Fetching license text from GitHub
+# TODO (#5): Fetching license text from GitHub
 (defn handle-license [license]
   (if-let [got-license (licenses license)]
   got-license
@@ -83,6 +83,6 @@
                    ```
                     proj-name)}})
 
-# TODO: Additional project templates and user templating engine
+# TODO (#6): Additional project templates and user templating engine
 (def templates
   {:default default-new})

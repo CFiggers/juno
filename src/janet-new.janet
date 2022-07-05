@@ -2,7 +2,7 @@
 (import argparse)
 (import ./templates)
 
-# TODO: Add and handle flags for including optional add-ons to a template
+# TODO (#1): Add and handle flags for including optional add-ons to a template
 # e.g. "executable" to add (declare-executable) to `project.janet`
 
 (def argparse-params
@@ -13,12 +13,12 @@
             :help "Make a new project directory. Expects [template] and [project name]."
             :args-expected 2 # Expects template and project name
             :args-required false} 
-     # TODO: Implement `license` subcommand
+     # TODO (#2): Implement `license` subcommand
      "license" {:kind :subcommand
                 :help "Add a license to the current directory. Expects an operation name and a licence name (such as `mit`)."
                 :args-expected 2 # Expects [:add|:remove|:append|:replace] and a license name
                 :args-required false} 
-     # TODO: Implement `directory` option to deploy a project to a custom dir     
+     # TODO (#3): Implement `directory` option to deploy a project to a custom dir     
      "directory" {:kind :option
                   :short "d"
                   :value-name "directory"
@@ -47,11 +47,11 @@
       :file (create-file! name contents)
       :folder (do (create-folder! name)
                   (os/cd name)
-                  (deploy-template contents) # TODO: Use directory handling
+  (deploy-template contents) # TODO (#4): Use directory handling
                   (os/cd ".."))
       (error "Unreachable"))))
 
-# TODO: Add directory handling
+  # TODO (#4): Add directory handling
 (varfn deploy-template [template]
   (let [steps (pairs template)]
     (map (fn [a] (apply execute-step a)) steps)))
