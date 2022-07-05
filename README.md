@@ -1,14 +1,14 @@
 # janet-new
 
-A simple CLI utility for creating new project scaffolds for [Janet](janet-lang/janet). Written in [Janet](janet-lang/janet). Inspired by [neil](https://github.com/babashka/neil).
+A simple CLI utility for creating new project scaffolds for [Janet](https://github.com/janet-lang/janet). Written in [Janet](https://github.com/janet-lang/janet). Inspired by [neil](https://github.com/babashka/neil).
 
 ## Getting Started
 
-Required: [Janet](janet-lang/janet) and [spork](janet-lang/spork).
+Required: [Janet](https://github.com/janet-lang/janet) and [spork](https://github.com/janet-lang/spork).
 
 1. Clone this repo.
 
-  - For e.g., using the [GitHub CLI](cli/cli): `$ gh repo clone CFiggers/janet-new`
+  - For e.g., using the [GitHub CLI](https://github.com/cli/cli): `$ gh repo clone CFiggers/janet-new`
 
 2. cd into the directory: `$ cd janet-new`
 
@@ -23,7 +23,7 @@ $ ls
 
 ## Compiling a Binary and Installing
 
-Required: [jpm](janet-lang/jpm).
+Required: [jpm](https://github.com/janet-lang/jpm).
 
 1. In the `janet-new` repo, run `jpm build`.
 
