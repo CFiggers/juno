@@ -1,5 +1,5 @@
 # (use spork)
-(import argparse)
+(import ./lib/argparse)
 (import ./templates)
 
 # TODO (#1): Add and handle flags for including optional add-ons to a template
