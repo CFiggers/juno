@@ -5,6 +5,8 @@
 # TODO (#1): Add and handle flags for including optional add-ons to a template
 # e.g. "executable" to add (declare-executable) to `project.janet`
 
+# TODO: (#8): Implement `adopt` feature within user templating engine
+
 (def argparse-params
     ["A simple CLI tool. Creates a new Janet project directory."
      "joke" {:kind :flag
@@ -32,6 +34,7 @@
   (print "- Creating file " path " at " (os/cwd))
   (os/shell (string "touch " path))
   (when contents 
+    # TODO (#9): Replace references to file/open, file/write, file/close with spit
     (let [file (file/open path :an)]
       (file/write file contents)
       (file/close file))))
