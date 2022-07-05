@@ -1,6 +1,6 @@
 # janet-new
 
-A simple CLI utility for creating new project scaffolds for [Janet](janet-lang/janet). Written in [Janet](janet-lang/janet).
+A simple CLI utility for creating new project scaffolds for [Janet](janet-lang/janet). Written in [Janet](janet-lang/janet). Inspired by [neil](https://github.com/babashka/neil).
 
 ## Usage 
 
