@@ -4,7 +4,7 @@ A simple CLI utility for creating new project scaffolds for [Janet](https://gith
 
 ## Getting Started
 
-Required: [Janet](https://github.com/janet-lang/janet) and [spork](https://github.com/janet-lang/spork).
+Required: [Janet](https://github.com/janet-lang/janet).
 
 1. Clone this repo.
 
