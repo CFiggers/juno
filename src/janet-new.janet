@@ -71,10 +71,11 @@
 
 (defn main [& args] 
   (let [res (argparse/argparse ;argparse-params)  
-        subcommands (res :subcommands)]
+        subcommands (res :subcommands)
+        in? (fn [a col] (if (index-of a col) true false))]
         (if res 
-        (cond 
-          (subcommands "new") (handle-new ;(reverse (in res "new")))
-          (subcommands "license") (print "Add a new license, I suppose") 
-          (print "Try again."))
-      (print "Couldn't parse")))) 
+          (cond 
+            (in? "new" subcommands) (handle-new ;(reverse (in res "new")))
+            (in? "license" subcommands) (print "Add a new license, I suppose") 
+            (print "Try again."))
+          (print "Couldn't parse")))) 
