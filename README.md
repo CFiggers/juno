@@ -14,7 +14,7 @@ Required: [Janet](janet-lang/janet) and [spork](janet-lang/spork).
 
 3. Run `$ janet janet-new.janet new hello-world`
 
-4. See a new directory folder created with the :
+4. See a new directory folder created with the arg you passed to the `new` subcommand:
 
 ```bash
 $ ls
