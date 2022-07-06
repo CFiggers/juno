@@ -1,4 +1,4 @@
-# janet-new
+# juno
 
 A simple CLI utility for creating new project scaffolds for [Janet](https://github.com/janet-lang/janet). Written in [Janet](https://github.com/janet-lang/janet). Inspired by [neil](https://github.com/babashka/neil).
 
@@ -8,11 +8,11 @@ Required: [Janet](https://github.com/janet-lang/janet).
 
 1. Clone this repo.
 
-  - For e.g., using the [GitHub CLI](https://github.com/cli/cli): `$ gh repo clone CFiggers/janet-new`
+  - For e.g., using the [GitHub CLI](https://github.com/cli/cli): `$ gh repo clone CFiggers/juno`
 
-2. cd into the directory: `$ cd janet-new`
+2. cd into the directory: `$ cd juno`
 
-3. Run `$ janet janet-new.janet new hello-world`
+3. Run `$ janet src/juno.janet new hello-world`
 
 4. See a new directory folder created with the arg you passed to the `new` subcommand:
 
@@ -25,7 +25,7 @@ $ ls
 
 Required: [jpm](https://github.com/janet-lang/jpm).
 
-1. In the `janet-new` repo, run `jpm build`.
+1. In the `juno` repo, run `jpm build`.
 
 2. See a new `build` directory folder:
 
@@ -34,8 +34,8 @@ $ ls
 ... build ...
 ```
 
-3. Put or symlink the `janet-new` binary in `build` onto your `$PATH`.
+3. Put or symlink the `juno` binary in `build` onto your `$PATH`.
 
-  - For e.g., using `ln` to create a symlink: `$ sudo ln -s /usr/bin/janet-new [path to janet-new]/build/janet-new`
+  - For e.g., using `ln` to create a symlink: `$ sudo ln -s /usr/bin/juno [path to juno]/build/juno`
   
-4. Use `janet-new` anywhere you want.
+4. Use `juno` anywhere you want.

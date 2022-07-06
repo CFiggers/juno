@@ -1,9 +1,9 @@
 (declare-project
-  :name "janet-new"
+  :name "juno"
   :description "A cli application for generating Janet project scaffolds")
 
 (declare-executable
-  :name "janet-new"
-  :entry "src/janet-new.janet"
+  :name "juno"
+  :entry "src/juno.janet"
   # :lflags ["-static"]
   :install false)
