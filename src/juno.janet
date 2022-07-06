@@ -7,6 +7,8 @@
 
 # TODO: (#8): Implement `adopt` feature within user templating engine
 
+(def version "0.0.2")
+
 (def argparse-params
     ["A simple CLI tool. Creates a new Janet project directory."
      "joke" {:kind :flag
@@ -25,7 +27,12 @@
                   :short "d"
                   :value-name "directory"
                   :required false
-                  :help "Specify a directory other than the current one."}])
+                  :help "Specify a directory other than the current one."}
+     "version" {:kind :flag
+                :short "v"
+                :help "Prints the CLI version."
+                :action (fn [] (print (string/format "Juno v%s" version)))
+                :short-circuit true}])
 
 (defn create-folder! [path]
   (os/mkdir path))
@@ -75,10 +82,13 @@
 (defn main [& args] 
   (let [res (argparse/argparse ;argparse-params)  
         subcommands (res :subcommands)
-        in? (fn [a col] (if (index-of a col) true false))]
-        (if res 
-          (cond 
-            (in? "new" subcommands) (handle-new ;(reverse (in res "new")))
-            (in? "license" subcommands) (print "Add a new license, I suppose") 
-            (print "Try again."))
-          (print "Couldn't parse")))) 
+        in? (fn [a col] (if (index-of a col) true false))]    
+    (cond 
+      (not res) (print "Couldn't parse")
+      (res "version") (break)    
+      subcommands (cond 
+                    (in? "new" subcommands) 
+                    (handle-new ;(reverse (in res "new")))
+                    (in? "license" subcommands) 
+                    (print "Add a new license, I suppose"))          
+      :else (print "Try again."))))
