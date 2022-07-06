@@ -77,15 +77,16 @@
       (print "No template with that name found."))))
 
 (defn main [& args] 
-  (let [res (argparse/argparse ;argparse-params)  
-        subcommands (res :subcommands)
+  (when-let [res (argparse/argparse ;argparse-params)
+             subcommands (res :subcommands)
+             in? (fn [a col] (if (index-of a col) true false))]
         in? (fn [a col] (if (index-of a col) true false))]    
-    (cond 
-      (not res) (print "Couldn't parse")
-      (res "version") (break)    
-      subcommands (cond 
-                    (in? "new" subcommands) 
-                    (handle-new ;(reverse (in res "new")))
-                    (in? "license" subcommands) 
-                    (print "Add a new license, I suppose"))          
+             in? (fn [a col] (if (index-of a col) true false))]
+    (cond
+      (res "version") (break)
+      subcommands (cond
+                    (in? "new" subcommands)
+                    (handle-new res)
+                    (in? "license" subcommands)
+                    (print "Add a new license, I suppose"))
       :else (print "Try again."))))
