@@ -12,7 +12,8 @@
 
 (def argparse-params
     ["A simple CLI tool. Creates a new Janet project directory."
-     "joke" {:kind :flag
+     "joke" {:kind :subcommand
+             :help "Tell one specific joke. Juno doesn't know any good ones."
              :action (fn [] (print "What's brown and sticky? A stick!"))} 
      "new" {:kind :subcommand
             :help "Make a new project directory. Expects [template] and [project name]."
@@ -83,10 +84,8 @@
              subcommands (res :subcommands)
              in? (fn [a col] (if (index-of a col) true false))]
     (cond
-      (res "version") (break)
       subcommands (cond
                     (in? "new" subcommands)
                     (handle-new res)
                     (in? "license" subcommands)
-                    (print "Add a new license, I suppose"))
-      :else (print "Try again."))))
+                    (print "Add a new license, I suppose")))))
