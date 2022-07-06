@@ -1,6 +1,7 @@
 # (use spork)
 (import ./lib/argparse)
 (import ./templates)
+(import spork/path)
 
 # TODO (#1): Add and handle flags for including optional add-ons to a template
 # e.g. "executable" to add (declare-executable) to `project.janet`
@@ -22,7 +23,6 @@
                 :help "Add a license to the current directory. Expects an operation name and a licence name (such as `mit`)."
                 :args-expected 2 # Expects [:add|:remove|:append|:replace] and a license name
                 :args-required false} 
-     # TODO (#3): Implement `directory` option to deploy a project to a custom dir     
      "directory" {:kind :option
                   :short "d"
                   :value-name "directory"
@@ -34,6 +34,7 @@
                 :action (fn [] (print (string/format "Juno v%s" version)))
                 :short-circuit true}])
 
+# Wrap os/mkdir to have ! in fn name indicating stateful change
 (defn create-folder! [path]
   (os/mkdir path))
 
@@ -54,23 +55,24 @@
       :file (create-file! name contents)
       :folder (do (create-folder! name)
                   (os/cd name)
-  (deploy-template contents) # TODO (#4): Use directory handling
+                  (deploy-template contents)
                   (os/cd ".."))
       (error "Unreachable"))))
 
-  # TODO (#4): Add directory handling
 (varfn deploy-template [template]
   (let [steps (pairs template)]
     (map (fn [a] (apply execute-step a)) steps)))
 
-(defn handle-new [proj-name &opt template]
-  (default template "default")
-  (let [temp ((templates/templates (keyword template)) proj-name)]
-    (if temp 
-      (do (print "Creating a new Janet project following the " template " template")
+(defn handle-new [res]
+  (let [[proj-name t] (reverse (res "new"))
+        dir (path/join (or (res "directory") ".") proj-name)
+        temp-name (or t "default")
+        temp ((templates/templates (keyword temp-name)) proj-name)] 
+    (if temp
+      (do (print "Creating a new Janet project following the " temp-name " template")
           (print)
-          (os/mkdir proj-name)
-          (os/cd proj-name)
+          (os/mkdir dir)
+          (os/cd dir)
           (deploy-template temp)
           (print)
           (print "Success! Thank you, please come again"))
@@ -79,8 +81,6 @@
 (defn main [& args] 
   (when-let [res (argparse/argparse ;argparse-params)
              subcommands (res :subcommands)
-             in? (fn [a col] (if (index-of a col) true false))]
-        in? (fn [a col] (if (index-of a col) true false))]    
              in? (fn [a col] (if (index-of a col) true false))]
     (cond
       (res "version") (break)
