@@ -21,7 +21,7 @@ $ ls
 ... hello-world ...
 ```
 
-## Installing script
+## Installing Script
 
 1. Symlink the `juno` script in the project root onto your `$PATH`.
 
@@ -49,3 +49,28 @@ $ ls
       Or using mv to actually relocate the binary: `$ mv [path to juno project root]/build/juno /usr/bin/juno`
   
 4. Use `juno` anywhere you want!
+
+## Roadmap
+
+- `license` subcommand for adding/updating licenses based on Github's API
+- Dynamic tweaks to templates based on flags (like `--executable`/`-e` to automatically include a `(declare-executable)` in `project.janet` but leave the rest of the template the same)
+- User-defined templates and automated template adoption from existing directories
+- Interactive collection of parameters if needed but not provided by option flags
+
+## Contributing
+
+Issues, forks, and pull requests are welcome!
+
+## Prior Art
+
+`juno` is by no means an original concept. Innumerable project scaffolding and management tools exist, written in a plethora of languages, for a plethora of target languages and frameworks.
+
+Here are a few that already exist in [Janet](https://github.com/janet-lang/janet) (alphabetical order):
+
+- [jeep](https://github.com/pyrmont/jeep)
+- [newt](https://github.com/yumaikas/newt)
+- [michael](https://git.sr.ht/~pepe/michael)
+
+Compared with these, the biggest difference with `juno` is the data-oriented approach to project templating. Also, the (planned) `adopt` command is distinct (to my knowledge, even among project scaffolding frameworks more broadly).
+
+Copyright (c) 2022 Caleb Figgers
