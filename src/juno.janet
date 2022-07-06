@@ -41,10 +41,7 @@
   (print "- Creating file " path " at " (os/cwd))
   (os/shell (string "touch " path))
   (when contents 
-    # TODO (#9): Replace references to file/open, file/write, file/close with spit
-    (let [file (file/open path :an)]
-      (file/write file contents)
-      (file/close file))))
+    (spit path contents)))
 
 # Declare function to allow reference out of order
 (varfn deploy-template [])
