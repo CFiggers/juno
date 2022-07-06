@@ -8,11 +8,11 @@ Required: [Janet](https://github.com/janet-lang/janet).
 
 1. Clone this repo.
 
-  - For e.g., using the [GitHub CLI](https://github.com/cli/cli): `$ gh repo clone CFiggers/juno`
+  a. For e.g., using the [GitHub CLI](https://github.com/cli/cli): `$ gh repo clone CFiggers/juno`
 
 2. cd into the directory: `$ cd juno`
 
-3. Run `$ janet src/juno.janet new hello-world`
+3. Run `$ juno new hello-world`
 
 4. See a new directory folder created with the arg you passed to the `new` subcommand:
 
@@ -20,6 +20,12 @@ Required: [Janet](https://github.com/janet-lang/janet).
 $ ls
 ... hello-world ...
 ```
+
+## Installing script
+
+1. Symlink the `juno` script in the project root onto your `$PATH`.
+
+  a. For e.g., using `ln`: `$ sudo ln -s /usr/bin/juno [path to juno project root]/juno`
 
 ## Compiling a Binary and Installing
 
@@ -36,6 +42,8 @@ $ ls
 
 3. Put or symlink the `juno` binary in `build` onto your `$PATH`.
 
-  - For e.g., using `ln` to create a symlink: `$ sudo ln -s /usr/bin/juno [path to juno]/build/juno`
+  a. For e.g., using `ln` to create a symlink: `$ sudo ln -s /usr/bin/juno [path to juno project root]/build/juno`
+
+  b. Or using mv to actually relocate the binary: `$ mv [path to juno project root]/build/juno /usr/bin/juno`
   
 4. Use `juno` anywhere you want.
