@@ -52,10 +52,13 @@ $ ls
 
 ## Roadmap
 
-- ~~Dynamic tweaks to templates based on flags (like `--executable`/`-e` to automatically include a `(declare-executable)` in `project.janet` but leave the rest of the template the same)~~ Done!
-- `license` subcommand for adding/updating licenses based on Github's API
-- User-defined templates and automated template adoption from existing directories
-- Interactive collection of parameters if needed but not provided by option flags
+### TODO
+- [ ] `license` subcommand for adding/updating licenses based on Github's API
+- [ ] User-defined templates and automated template adoption from existing directories
+- [ ] Interactive collection of parameters if needed but not provided by option flags
+
+### DONE
+- [x] ~~Dynamic tweaks to templates based on flags (like `--executable`/`-e` to automatically include a `(declare-executable)` in `project.janet` but leave the rest of the template the same)~~
 
 ## Contributing
 
