@@ -21,14 +21,20 @@
             :args-required false} 
      # TODO (#2): Implement `license` subcommand
      "license" {:kind :subcommand
-                :help "Add a license to the current directory. Expects an operation name and a licence name (such as `mit`)."
+                :help "Add a license to the current directory. Expects an operation name and a license name (such as `mit`)."
                 :args-expected 2 # Expects [:add|:remove|:append|:replace] and a license name
                 :args-required false} 
+     "license" {:kind :option
+                :short "l"
+                :help "With `new`: Specify a search string for `LICENSE` (e.g. `mit` or `gpl2`)."}
+     "executable" {:kind :flag
+                   :short "e"
+                   :help "With `new`: Include `(declare-executable)` block in `project.janet`."} 
      "directory" {:kind :option
                   :short "d"
                   :value-name "directory"
                   :required false
-                  :help "Specify a directory other than the current one."}
+                  :help "With `new`: Specify a directory other than the current one."}
      "version" {:kind :flag
                 :short "v"
                 :help "Prints the CLI version."
@@ -68,7 +74,7 @@
   (let [[proj-name t] (reverse (res "new"))
         dir (path/join (or (res "directory") ".") proj-name)
         temp-name (or t "default")
-        temp ((templates/templates (keyword temp-name)) proj-name)] 
+        temp ((templates/templates (keyword temp-name)) proj-name res)] 
     (if temp
       (do (print "Creating a new Janet project following the " temp-name " template")
           (print)

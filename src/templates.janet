@@ -1,4 +1,4 @@
-(def licenses
+(def licenses-cache
   {:mit  
    ```
    MIT License
@@ -25,28 +25,31 @@
    ```})
 
 # TODO (#5): Fetching license text from GitHub
-(defn handle-license [license]
-  (if-let [got-license (licenses license)]
-  got-license
-  (errorf "Tried to get a %s licence, but couldn't" license)))
+(defn handle-license [res]
+  (let [license (or (res "license") "mit")]
+    (if-let [got-license (licenses-cache (keyword license))] 
+      got-license 
+      (do (print "  ! Tried to get a %s license, but couldn't !" license)
+          "TODO: Add an awesome license here"))))
 
-(defn default-new [proj-name]
+(defn default-new [proj-name res]
   {:license {:type :file
              :name "LICENSE" 
-             :contents (handle-license :mit)} 
+             :contents (handle-license res)} 
    :gitignore {:type :file
                :name ".gitignore"
                :contents 
                ```
                .clj-kondo
                .lsp
+               .vscode
                build
                ```}
    :readme {:type :file
             :name "README.md"
             :contents
             (string/format
-             ``` 
+             ```
              # %s
 
              A new [Janet](janet-lang/janet) project. The sky is the limit!
@@ -75,13 +78,25 @@
    :project-file {:type :file
                   :name "project.janet"
                   :contents 
-                  (string/format 
-                   ```
-                   (declare-project
-                     :name %s
-                     :description "TODO: Write a cool description" 
-                   ```
-                    proj-name)}})
+                  (string 
+                   (string/format 
+                     ```
+                     (declare-project
+                       :name %s
+                       :description "TODO: Write a cool description" 
+                     ```
+                     proj-name)
+                   (when (res "executable")
+                     (string/format
+                       ``` 
+                       (declare-executable
+                         :name "%s"
+                         :entry "src/%s.janet"
+                         # :lflags ["-static"]
+                         :install false)
+                       ```
+                      proj-name
+                      proj-name)))}})
 
 # TODO (#6): Additional project templates and user templating engine
 (def templates
