@@ -82,7 +82,7 @@
                    (string/format 
                      ```
                      (declare-project
-                       :name %s
+                       :name "%s"
                        :description "TODO: Write a cool description" 
                      ```
                      proj-name)
