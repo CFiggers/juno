@@ -83,7 +83,7 @@
                      ```
                      (declare-project
                        :name "%s"
-                       :description "TODO: Write a cool description" 
+                       :description "TODO: Write a cool description") 
                      ```
                      proj-name)
                    (when (res "executable")
