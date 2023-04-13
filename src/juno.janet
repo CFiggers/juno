@@ -1,11 +1,6 @@
-# (use spork)
-# (import ./lib/argparse)
 (import /src/templates)
 (import cmd)
 (import spork/path)
-
-# TODO (#1): Add and handle flags for including optional add-ons to a template
-# e.g. "executable" to add (declare-executable) to `project.janet`
 
 # TODO: (#8): Implement `adopt` feature within user templating engine
 
