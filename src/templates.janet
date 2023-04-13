@@ -25,17 +25,17 @@
    ```})
 
 # TODO (#5): Fetching license text from GitHub
-(defn handle-license [res]
-  (let [license (or (res "license") "mit")]
+(defn handle-license [opts]
+  (let [license (or (opts :license) "mit")]
     (if-let [got-license (licenses-cache (keyword license))] 
       got-license 
-      (do (print "  ! Tried to get a %s license, but couldn't !" license)
-          "TODO: Add an awesome license here"))))
+      (do (printf "  ! Tried to get a %s license, but couldn't !" license)
+          (print "TODO: Add an awesome license here")))))
 
-(defn default-new [proj-name res]
+(defn default-new [proj-name opts]
   {:license {:type :file
              :name "LICENSE" 
-             :contents (handle-license res)} 
+             :contents (handle-license opts)} 
    :gitignore {:type :file
                :name ".gitignore"
                :contents 
@@ -86,9 +86,10 @@
                        :description "TODO: Write a cool description") 
                      ```
                      proj-name)
-                   (when (res "executable")
+                   (when (opts :executable)
                      (string/format
                        ``` 
+                          
                        (declare-executable
                          :name "%s"
                          :entry "src/%s.janet"

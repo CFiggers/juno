@@ -1,6 +1,7 @@
 # (use spork)
-(import ./lib/argparse)
-(import ./templates)
+# (import ./lib/argparse)
+(import /src/templates)
+(import cmd)
 (import spork/path)
 
 # TODO (#1): Add and handle flags for including optional add-ons to a template
@@ -8,38 +9,7 @@
 
 # TODO: (#8): Implement `adopt` feature within user templating engine
 
-(def version "0.0.2")
-
-(def argparse-params
-  ["A simple CLI tool. Creates a new Janet project directory."
-   "joke" {:kind :subcommand
-           :help "Tell one specific joke. Juno doesn't know any good ones."
-           :action (fn [] (print "What's brown and sticky? A stick!"))}
-   "new" {:kind :subcommand
-          :help "Make a new project directory. Expects [template] and [project name]."
-          :args-expected 2 # Expects template and project name
-          :args-required false}
-   # TODO (#2): Implement `license` subcommand
-   "license" {:kind :subcommand
-              :help "Add a license to the current directory. Expects an operation name and a license name (such as `mit`)."
-              :args-expected 2 # Expects [:add|:remove|:append|:replace] and a license name
-              :args-required false}
-   "license" {:kind :option
-              :short "l"
-              :help "With `new`: Specify a search string for `LICENSE` (e.g. `mit` or `gpl2`)."}
-   "executable" {:kind :flag
-                 :short "e"
-                 :help "With `new`: Include `(declare-executable)` block in `project.janet`."}
-   "directory" {:kind :option
-                :short "d"
-                :value-name "directory"
-                :required false
-                :help "With `new`: Specify a directory other than the current one."}
-   "version" {:kind :flag
-              :short "v"
-              :help "Prints the CLI version."
-              :action (fn [] (print (string/format "Juno v%s" version)))
-              :short-circuit true}])
+(def version "0.0.3")
 
 # Wrap os/mkdir to have ! in fn name indicating stateful change
 (defn create-folder! [path]
@@ -50,6 +20,19 @@
   (os/shell (string "touch " path))
   (when contents
     (spit path contents)))
+
+(cmd/defn handle-joke 
+          "Tell one specific joke. Juno doesn't know any good ones." 
+          [] 
+          (print "What's brown and sticky? A stick!"))
+
+(cmd/defn handle-license 
+          "Add a license to the current directory. Expects an operation name and a license name (such as `mit`)." 
+          [license-type (optional :string "mit")]
+          (if-let [got-license (templates/licenses-cache (keyword license-type))]
+            (create-file! "LICENSE" got-license)
+            (do (printf "  ! Tried to get a %s license, but couldn't !" license-type)
+                (print "TODO: Add an awesome license here"))))
 
 # Declare function to allow reference out of order
 (varfn deploy-template [])
@@ -70,13 +53,11 @@
   (let [steps (pairs template)]
     (map (fn [a] (apply execute-step a)) steps)))
 
-(defn handle-new [res]
-  (let [[proj-name t] (reverse (res "new"))
-        dir (path/join (or (res "directory") ".") proj-name)
-        temp-name (or t "default")
-        temp ((templates/templates (keyword temp-name)) proj-name res)]
+(defn serve-new [proj-name &named opts]
+  (let [dir (path/join (or (opts :directory) ".") proj-name) 
+        temp ((templates/templates (keyword (or (opts :template) "default"))) proj-name opts)]
     (if temp
-      (do (print "Creating a new Janet project following the " temp-name " template")
+      (do (print "Creating a new Janet project following the " (opts :template) " template")
           (print)
           (os/mkdir dir)
           (os/cd dir)
@@ -85,13 +66,26 @@
           (print "Success! Thank you, please come again"))
       (print "No template with that name found."))))
 
-(defn main [& args]
-  (when-let [res (argparse/argparse ;argparse-params)
-             subcommands (res :subcommands)
-             in? (fn [a col] (if (index-of a col) true false))]
-    (cond
-      subcommands (cond
-                    (in? "new" subcommands)
-                    (handle-new res)
-                    (in? "license" subcommands)
-                    (print "Add a new license, I suppose")))))
+(cmd/defn handle-new "Make a new project directory." 
+          [[--directory -d] (optional :string ".")
+           [--executable -e] (flag)
+           [--license -l] (optional :string "mit")
+           template (optional :string "default")
+           project-name :string]
+          (serve-new project-name
+                     :opts {:executable executable
+                            :license license
+                            :project-name project-name
+                            :template template
+                            :directory directory}))
+
+(cmd/defn handle-version "" []
+          (print "Version " version))
+
+(cmd/main
+ (cmd/group "A simple CLI tool for creating new project directories. Defaults to a simple Janet project."
+            joke handle-joke
+            license handle-license
+            new handle-new
+            --version handle-version
+            -v handle-version))
