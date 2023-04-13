@@ -76,4 +76,4 @@ Here are a few that already exist in [Janet](https://github.com/janet-lang/janet
 
 Compared with these, the biggest difference with `juno` is the data-oriented approach to project templating. Also, the (planned) `adopt` command is distinct (to my knowledge, even among project scaffolding frameworks more broadly).
 
-Copyright (c) 2022 Caleb Figgers
+Copyright (c) 2023 Caleb Figgers
