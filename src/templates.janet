@@ -35,7 +35,7 @@
 (defn default-new [proj-name opts]
   {:license {:type :file
              :name "LICENSE" 
-             :contents (handle-license opts)} 
+             :contents (string/replace "[name]" (or (opts :author) "[name]") (handle-license opts) )} 
    :gitignore {:type :file
                :name ".gitignore"
                :contents 

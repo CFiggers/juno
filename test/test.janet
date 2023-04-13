@@ -17,13 +17,43 @@
 
 (deftest: test-project "Test new project, defaults" [_]
   (test ($< "./build/juno" "new" "test-project") "Creating a new Janet project following the default template\n\n- Creating file README.md at /home/caleb/projects/janet/juno/test-project\n- Creating file LICENSE at /home/caleb/projects/janet/juno/test-project\n- Creating file project.janet at /home/caleb/projects/janet/juno/test-project\n- Creating file test-project.janet at /home/caleb/projects/janet/juno/test-project/src\n- Creating file .gitignore at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
+  
   (test (nil? (os/stat "test-project")) false)
   (test (nil? (os/stat "test-project/LICENSE")) false)
   (test (nil? (os/stat "test-project/README.md")) false)
   (test (nil? (os/stat "test-project/src")) false)
   (test (nil? (os/stat "test-project/src/test-project.janet")) false)
   (test (nil? (os/stat "test-project/.gitignore")) false)
-  (test (nil? (os/stat "test-project/project.janet")) false))
+  (test (nil? (os/stat "test-project/project.janet")) false)
+  
+  (test (string/find "declare-executable" (slurp "test-project/project.janet")) nil)
+  (test (string/find "[name]" (slurp "test-project/LICENSE")) 34))
+
+(deftest: test-project "Test new project, with executable flag" [_]
+  (test ($< "./build/juno" "new" "test-project" "-e") "Creating a new Janet project following the default template\n\n- Creating file README.md at /home/caleb/projects/janet/juno/test-project\n- Creating file LICENSE at /home/caleb/projects/janet/juno/test-project\n- Creating file project.janet at /home/caleb/projects/janet/juno/test-project\n- Creating file test-project.janet at /home/caleb/projects/janet/juno/test-project/src\n- Creating file .gitignore at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
+  
+  (test (nil? (os/stat "test-project")) false)
+  (test (nil? (os/stat "test-project/LICENSE")) false)
+  (test (nil? (os/stat "test-project/README.md")) false)
+  (test (nil? (os/stat "test-project/src")) false)
+  (test (nil? (os/stat "test-project/src/test-project.janet")) false)
+  (test (nil? (os/stat "test-project/.gitignore")) false)
+  (test (nil? (os/stat "test-project/project.janet")) false)
+
+  (test (string/find "declare-executable" (slurp "test-project/project.janet")) 96))
+
+(deftest: test-project "Test new project, with author parameter" [_]
+  (test ($< "./build/juno" "new" "test-project" "--author" "\"Rumplestiltskin\"") "Creating a new Janet project following the default template\n\n- Creating file README.md at /home/caleb/projects/janet/juno/test-project\n- Creating file LICENSE at /home/caleb/projects/janet/juno/test-project\n- Creating file project.janet at /home/caleb/projects/janet/juno/test-project\n- Creating file test-project.janet at /home/caleb/projects/janet/juno/test-project/src\n- Creating file .gitignore at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
+  
+  (test (nil? (os/stat "test-project")) false)
+  (test (nil? (os/stat "test-project/LICENSE")) false)
+  (test (nil? (os/stat "test-project/README.md")) false)
+  (test (nil? (os/stat "test-project/src")) false)
+  (test (nil? (os/stat "test-project/src/test-project.janet")) false)
+  (test (nil? (os/stat "test-project/.gitignore")) false)
+  (test (nil? (os/stat "test-project/project.janet")) false)
+
+  (test (string/find "Rumplestiltskin" (slurp "test-project/LICENSE")) 35))
 
 (deftest: test-project "Test `license` subcommand" [_]
   (os/mkdir "test-project")
