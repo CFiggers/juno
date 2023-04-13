@@ -23,20 +23,17 @@
   :teardown (fn [_] ($ "rm" "-rf" "test-project")))
 
 # Test --version command
-
 (deftest: test-project 
   "Test `--version` command" [_]
   (test ($< "./build/juno" "--version") "Version 0.0.3\n")
   (test ($< "./build/juno" "-v") "Version 0.0.3\n"))
 
 # Test `joke` subcommand
-
 (deftest: test-project 
   "Test telling a joke" [_] 
   (test ($< "./build/juno" "joke") "What's brown and sticky? A stick!\n"))
 
 # Test `new` subcommand
-
 (deftest: test-project 
   "Test new project, defaults" [_]
   (test ($< "./build/juno" "new" "test-project") "Creating a new Janet project following the default template\n\n- Creating file README.md at /home/caleb/projects/janet/juno/test-project\n- Creating file LICENSE at /home/caleb/projects/janet/juno/test-project\n- Creating file project.janet at /home/caleb/projects/janet/juno/test-project\n- Creating file test-project.janet at /home/caleb/projects/janet/juno/test-project/src\n- Creating file .gitignore at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
@@ -78,7 +75,6 @@
   (test (string/find "TODO: Write a cool description" (slurp "test-project/project.janet")) nil))
 
 # Test `license` subcommand 
-
 (deftest: test-project 
   "Test `license` subcommand" [_]
   (os/mkdir "test-project")
