@@ -82,7 +82,15 @@
           (print "Version " version))
 
 (cmd/main
- (cmd/group "A simple CLI tool for creating new project directories. Defaults to a simple Janet project."
+ (cmd/group (string/format
+             ``
+             Juno v%s
+
+             Usage: juno [subcommand] {positional arguments} [options] 
+
+             A simple CLI tool for creating new project directories. Defaults to a basic Janet project.
+             ``
+             version)
             joke handle-joke
             license handle-license
             new handle-new
