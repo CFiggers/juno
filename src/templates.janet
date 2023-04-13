@@ -79,13 +79,14 @@
                   :name "project.janet"
                   :contents 
                   (string 
-                   (string/format 
-                     ```
-                     (declare-project
-                       :name "%s"
-                       :description "TODO: Write a cool description") 
-                     ```
-                     proj-name)
+                   (string/format
+                    ```
+                    (declare-project
+                      :name "%s"
+                      :description "%s")
+                    ```
+                    proj-name
+                    (or (opts :description) "TODO: Write a cool description"))
                    (when (opts :executable)
                      (string/format
                        ``` 

@@ -66,6 +66,7 @@
            [--executable -e] (flag)
            [--license -l] (optional :string "mit")
            [--author -a] (optional :string) 
+           [--description -D] (optional :string)
            template (optional :string "default")
            project-name :string]
           (serve-new project-name
@@ -74,7 +75,8 @@
                             :project-name project-name
                             :template template
                             :directory directory
-                            :author author}))
+                            :author author
+                            :description description}))
 
 (cmd/defn handle-version "" []
           (print "Version " version))
