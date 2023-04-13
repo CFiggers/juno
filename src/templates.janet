@@ -98,6 +98,90 @@
                       proj-name
                       proj-name)))}})
 
+(defn typst-new [proj-name opts]
+  {:lib-file {:type :folder 
+              :name "lib" 
+              :contents {:main {:type :file 
+                                :name "prep_template.typ" 
+                                :contents 
+                                ```
+                                #let body(doc) = {
+                                    set page ( 
+                                        paper: "us-letter",
+                                        numbering: "1",
+                                        margin: (x: 1in, top: 1in, bottom: 0.9in)
+                                    )
+                                
+                                    show heading.where(level:1): it => [
+                                        #set block(
+                                            below: 1.65em
+                                        )
+                                        #set text(12pt, 
+                                            weight: "bold",
+                                            font: "Times New Roman")
+                                        #block(it.body)
+                                    ]
+                                
+                                    show heading.where(level:2): it => [
+                                        #set block(
+                                            below: 1.65em
+                                        )
+                                        #set text(12pt, 
+                                            style: "italic",
+                                            font: "Times New Roman")
+                                        #block(it.body)
+                                    ]
+                                
+                                    show heading.where(level:3): it => [
+                                        #set block(
+                                            below: 1.65em
+                                        )
+                                        #set text(12pt, 
+                                            style: "italic",
+                                            wight: "regular",
+                                            font: "Times New Roman")
+                                        #block(it.body)
+                                    ]
+                                
+                                    set par(
+                                        leading: 0.5em
+                                    )
+                                
+                                    set block(
+                                        below: 1.65em
+                                    )
+                                
+                                    set text(
+                                        font: "Times New Roman",
+                                        size: 12pt
+                                    )
+                                
+                                    doc
+                                } 
+                                
+                                #let blockquote(body) = box(inset: (x: 1.65em, y: 0pt), width: 100%, {
+                                  set text(style: "italic")
+                                  body
+                                })
+                                
+                                #let poetry(body) = box(inset: (x: 1.65em, y: 0pt), width: 100%, {
+                                  set text(style: "italic")
+                                  set align(center)
+                                  set block(spacing: 0.5em)
+                                  body
+                                })
+                                ```}}} 
+   :index {:type :file
+           :name "index.typ"
+           :contents 
+           ```
+           #import "./lib/prep_template.typ": *
+           #show: body 
+           
+           = 
+           ```}})
+
 # TODO (#6): Additional project templates and user templating engine
 (def templates
-  {:default default-new})
+  {:default default-new
+   :typst typst-new})
