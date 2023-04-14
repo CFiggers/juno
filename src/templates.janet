@@ -25,17 +25,17 @@
    ```})
 
 # TODO (#5): Fetching license text from GitHub
-(defn handle-license [res]
-  (let [license (or (res "license") "mit")]
+(defn handle-license [opts]
+  (let [license (or (opts :license) "mit")]
     (if-let [got-license (licenses-cache (keyword license))] 
       got-license 
-      (do (print "  ! Tried to get a %s license, but couldn't !" license)
-          "TODO: Add an awesome license here"))))
+      (do (printf "  ! Tried to get a %s license, but couldn't !" license)
+          (print "TODO: Add an awesome license here")))))
 
-(defn default-new [proj-name res]
+(defn default-new [proj-name opts]
   {:license {:type :file
              :name "LICENSE" 
-             :contents (handle-license res)} 
+             :contents (handle-license opts)} 
    :gitignore {:type :file
                :name ".gitignore"
                :contents 
@@ -86,9 +86,10 @@
                        :description "TODO: Write a cool description") 
                      ```
                      proj-name)
-                   (when (res "executable")
+                   (when (opts :executable)
                      (string/format
                        ``` 
+                          
                        (declare-executable
                          :name "%s"
                          :entry "src/%s.janet"
@@ -98,6 +99,90 @@
                       proj-name
                       proj-name)))}})
 
+(defn typst-new [proj-name opts]
+  {:lib-file {:type :folder 
+              :name "lib" 
+              :contents {:main {:type :file 
+                                :name "prep_template.typ" 
+                                :contents 
+                                ```
+                                #let body(doc) = {
+                                    set page ( 
+                                        paper: "us-letter",
+                                        numbering: "1",
+                                        margin: (x: 1in, top: 1in, bottom: 0.9in)
+                                    )
+                                
+                                    show heading.where(level:1): it => [
+                                        #set block(
+                                            below: 1.65em
+                                        )
+                                        #set text(12pt, 
+                                            weight: "bold",
+                                            font: "Times New Roman")
+                                        #block(it.body)
+                                    ]
+                                
+                                    show heading.where(level:2): it => [
+                                        #set block(
+                                            below: 1.65em
+                                        )
+                                        #set text(12pt, 
+                                            style: "italic",
+                                            font: "Times New Roman")
+                                        #block(it.body)
+                                    ]
+                                
+                                    show heading.where(level:3): it => [
+                                        #set block(
+                                            below: 1.65em
+                                        )
+                                        #set text(12pt, 
+                                            style: "italic",
+                                            wight: "regular",
+                                            font: "Times New Roman")
+                                        #block(it.body)
+                                    ]
+                                
+                                    set par(
+                                        leading: 0.5em
+                                    )
+                                
+                                    set block(
+                                        below: 1.65em
+                                    )
+                                
+                                    set text(
+                                        font: "Times New Roman",
+                                        size: 12pt
+                                    )
+                                
+                                    doc
+                                } 
+                                
+                                #let blockquote(body) = box(inset: (x: 1.65em, y: 0pt), width: 100%, {
+                                  set text(style: "italic")
+                                  body
+                                })
+                                
+                                #let poetry(body) = box(inset: (x: 1.65em, y: 0pt), width: 100%, {
+                                  set text(style: "italic")
+                                  set align(center)
+                                  set block(spacing: 0.5em)
+                                  body
+                                })
+                                ```}}} 
+   :index {:type :file
+           :name "index.typ"
+           :contents 
+           ```
+           #import "./lib/prep_template.typ": *
+           #show: body 
+           
+           = 
+           ```}})
+
 # TODO (#6): Additional project templates and user templating engine
 (def templates
-  {:default default-new})
+  {:default default-new
+   :typst typst-new})
