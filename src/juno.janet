@@ -1,5 +1,6 @@
 (import /src/templates)
 (import cmd)
+(import jdn)
 (import spork/path)
 
 # TODO: (#8): Implement `adopt` feature within user templating engine
@@ -67,6 +68,7 @@
            [--license -l] (optional :string "mit")
            [--author -a] (optional :string) 
            [--description -D] (optional :string)
+           [--test -t] (flag)
            template (optional :string "default")
            project-name :string]
           (serve-new project-name
@@ -76,10 +78,14 @@
                             :template template
                             :directory directory
                             :author author
+                            :test test
                             :description description}))
 
 (cmd/defn handle-version "" []
           (print "Version " version))
+
+(cmd/defn handle-configure "Configure defaults (like author, template, and license) that Juno will use elsewhere." []
+          (print "Sorry, this isn't implemented yet!"))
 
 (cmd/main
  (cmd/group (string/format
@@ -94,5 +100,6 @@
             joke handle-joke
             license handle-license
             new handle-new
+            configure handle-configure
             --version handle-version
             -v handle-version))

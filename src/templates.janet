@@ -98,7 +98,26 @@
                          :install false)
                        ```
                       proj-name
-                      proj-name)))}})
+                      proj-name)))}
+  :test (if (opts :test)
+            {:type :folder 
+             :name "test" 
+             :contents {:test1 {:type :file 
+                                :name "test.janet" 
+                                :contents 
+                                ```
+                                (use judge) 
+                                # (import spork/test)
+                                
+                                (def start (os/clock))
+                                 
+                                (deftest "name this"
+                                  (test true true))
+     
+                                (deftest final-time
+                                  (print "Elapsed time: " (- (os/clock) start) " seconds"))
+                                ```}}} 
+            nil)})
 
 (defn typst-new [proj-name opts]
   {:lib-file {:type :folder 
