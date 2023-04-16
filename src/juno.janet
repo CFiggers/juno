@@ -7,8 +7,9 @@
 
 (def version "0.0.3")
 
-# Wrap os/mkdir to have ! in fn name indicating stateful change
-(defn create-folder! [path]
+(defn create-folder! 
+  "Wrap os/mkdir to have ! in fn name indicating stateful change"
+  [path]
   (os/mkdir path))
 
 (defn create-file! [path &opt contents]
@@ -18,17 +19,17 @@
     (spit path contents)))
 
 (cmd/defn handle-joke 
-          "Tell one specific joke. Juno doesn't know any good ones." 
-          [] 
-          (print "What's brown and sticky? A stick!"))
+  "Tell one specific joke. Juno doesn't know any good ones." 
+  [] 
+  (print "What's brown and sticky? A stick!"))
 
 (cmd/defn handle-license 
-          "Add a license to the current directory. Expects an operation name and a license name (such as `mit`)." 
-          [license-type (optional :string "mit")]
-          (if-let [got-license (templates/licenses-cache (keyword license-type))]
-            (create-file! "LICENSE" got-license)
-            (do (printf "  ! Tried to get a %s license, but couldn't !" license-type)
-                (print "TODO: Add an awesome license here"))))
+  "Add a license to the current directory. Expects an operation name and a license name (such as `mit`)." 
+  [license-type (optional :string "mit")]
+  (if-let [got-license (templates/licenses-cache (keyword license-type))]
+    (create-file! "LICENSE" got-license)
+    (do (printf "  ! Tried to get a %s license, but couldn't !" license-type)
+        (print "TODO: Add an awesome license here"))))
 
 # Declare function to allow reference out of order
 (varfn deploy-template [])
@@ -63,43 +64,44 @@
       (print "No template with that name found."))))
 
 (cmd/defn handle-new "Make a new project directory." 
-          [[--directory -d] (optional :string ".")
-           [--executable -e] (flag)
-           [--license -l] (optional :string "mit")
-           [--author -a] (optional :string) 
-           [--description -D] (optional :string)
-           [--test -t] (flag)
-           template (optional :string "default")
-           project-name :string]
-          (serve-new project-name
-                     :opts {:executable executable
-                            :license license
-                            :project-name project-name
-                            :template template
-                            :directory directory
-                            :author author
-                            :test test
-                            :description description}))
+  [[--directory --dir -d] (optional :string ".") "The relative directory path where you'd like juno to create the new project. Defaults to the current dir."
+   [--executable -e] (flag) "Indicate to the template to include features for building executables, if it has any."
+   [--license -l] (optional :string "mit") "Specify a license to include in the project. Defaults to MIT."
+   [--author -a] (optional :string) "Specify the author name to use to the copyright field in the LICENSE file."
+   [--description -D] (optional :string) "Specify the description to use in the template's project description fields, if it has any."
+   [--test -t] (flag) "Indicate to the template to include features for testing, if it has any."
+   template (optional :string "default") "Tell juno what template to use to scaffold your new project. Defaults to a simple Janet project."
+   project-name :string] "Specify the project name to use in the template's project name fields, if it has any."
+  (serve-new project-name
+             :opts {:executable executable
+                    :license license
+                    :project-name project-name
+                    :template template
+                    :directory directory
+                    :author author
+                    :test test
+                    :description description}))
 
 (cmd/defn handle-version "" []
-          (print "Version " version))
+  (print "Version " version))
 
 (cmd/defn handle-configure "Configure defaults (like author, template, and license) that Juno will use elsewhere." []
-          (print "Sorry, this isn't implemented yet!"))
+  (print "Sorry, this isn't implemented yet!"))
 
 (cmd/main
- (cmd/group (string/format
-             ``
-             Juno v%s
-
-             Usage: juno [subcommand] {positional arguments} [options] 
-
-             A simple CLI tool for creating new project directories. Defaults to a basic Janet project.
-             ``
-             version)
-            joke handle-joke
-            license handle-license
-            new handle-new
-            configure handle-configure
-            --version handle-version
-            -v handle-version))
+ (cmd/group 
+  (string/format
+    ``
+    Juno v%s
+    
+    Usage: juno [subcommand] {positional arguments} [options] 
+    
+    A simple CLI tool for creating new project directories. Defaults to a basic Janet project.
+    ``
+    version)
+    joke handle-joke
+    license handle-license
+    new handle-new
+    configure handle-configure
+    --version handle-version
+    -v handle-version))
