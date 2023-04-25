@@ -159,7 +159,7 @@
                                         )
                                         #set text(12pt, 
                                             style: "italic",
-                                            wight: "regular",
+                                            weight: "regular",
                                             font: "Times New Roman")
                                         #block(it.body)
                                     ]
