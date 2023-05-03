@@ -26,6 +26,11 @@
   # Teardown: Remove test-project, if exists
   :teardown (fn [_] ($ "rm" "-rf" "test-project")))
 
+# Test `juno` without subcommands
+
+(deftest: test-project "Test `juno` without arguments" [_]
+  (test-error ($< "./build/juno") "command(s) (@[\"./build/juno\"]) failed, exit code(s) @[1]"))
+
 # Test --version command
 
 (deftest: test-project "Test `--version` command" [_]
@@ -38,6 +43,9 @@
   (test ($< "./build/juno" "joke") "What's brown and sticky? A stick!\n"))
 
 # Test `new` subcommand
+
+(deftest: test-project "Test new project, call without arguments" [_]
+  (test-error ($< "./build/juno" "new") "command(s) (@[\"./build/juno\" \"new\"]) failed, exit code(s) @[1]"))
 
 (deftest: test-project "Test new project, defaults" [_]
   (test ($< "./build/juno" "new" "test-project") "Creating a new Janet project following the default template\n\n- Creating file README.md at /home/caleb/projects/janet/juno/test-project\n- Creating file LICENSE at /home/caleb/projects/janet/juno/test-project\n- Creating file project.janet at /home/caleb/projects/janet/juno/test-project\n- Creating file test-project.janet at /home/caleb/projects/janet/juno/test-project/src\n- Creating file .gitignore at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
@@ -110,15 +118,28 @@
   :teardown (fn [& _] ($ "rm" "-rf" ".config")))
 
 (deftest: w-config-dir "get-config-map, doesn't exist yet" [_] 
-  (test (get-config-map :config-root "./" :config-name ".testrc") {})
+  (test (manage-config-map! :load :config-root "./" :config-name ".testrc") {})
   (test (truthy? (os/stat "./.config/.testrc")) true))
 
 (deftest: w-config-dir "get-config-map, exists" [_] 
   ($ "mkdir" ".config")
   (spit "./.config/.junorc" (jdn/encode {:default-template "typst"}))
-  (test (get-config-map :config-root "./") {:default-template "typst"}))
+  (test (manage-config-map! :load :config-root "./") {:default-template "typst"}))
+
+(deftest "Test config, without arguments"
+  (test ($< "./build/juno" "config")))
+
+# (deftest: test-project "Test config, without arguments"
+#   (test ($< "./build/juno" "config" "--default-template=typst"))
+#   (test ($< "./build/juno" "config" "--default-template" "typst")))
 
 # Test `license` subcommand 
+
+(deftest: test-project "Test `license` subcommand, without arguments" [_]
+  (os/mkdir "test-project")
+  (os/cd "test-project")
+  (test-error ($< "./build/juno" "license") "spawn failed: \"No such file or directory\"")
+  (os/cd ".."))
 
 (deftest: test-project "Test `license` subcommand" [_]
   (os/mkdir "test-project")

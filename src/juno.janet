@@ -87,20 +87,51 @@
 (cmd/defn handle-version "" []
   (print "Version " version))
 
-(defn load-config-file :tested [config-path]
+(defn ensure-config-file! [config-path]
+  (unless (os/stat config-path)
+    ($ "mkdir" (path/dirname config-path) "-p")
+    (spit config-path (jdn/encode {}))))
+
+(defn load-config-file! [config-path]
   (jdn/decode (slurp config-path)))
 
-(defn get-config-map :tested [&named config-root config-name]
+(defn save-config-file! [config-path config-map]
+  (spit config-path (jdn/encode config-map)))
+
+(defn manage-config-map! [action &named config-map config-root config-name]
   (let [homedir (or config-root (os/getenv "HOME"))
         config-path (path/join homedir ".config" (or config-name ".junorc"))]
-    (if (os/stat config-path)
-      (load-config-file config-path)
-      (do ($ "mkdir" (path/join homedir ".config") "-p")
-          (spit config-path (jdn/encode {}))
-          {}))))
+    (ensure-config-file! config-path)
+    (case action
+      :load (load-config-file! config-path)
+      :save (save-config-file! config-path config-map)
+      :reset (spit config-path (jdn/encode {})))))
 
-(cmd/defn handle-configure "Configure defaults (like author, template, and license) that Juno will use elsewhere." []
-  (print "Sorry, this isn't implemented yet!"))
+(defn print-defaults [config-map] 
+  (print "Your current Juno configuration is as follows:" "\n") 
+  (if (empty? config-map)
+    (print "- You have no user defaults set")
+    (each config (pairs config-map)
+      (print "- Your default "
+             (case (first config)
+               :default-template "template"
+               :default-author "author"
+               :default-license "license")
+             " is set to: " (in config 1)))))
+
+(cmd/defn handle-configure "Configure defaults (like author, template, and license) that Juno will use elsewhere."
+  [target (optional @{--default-template :string
+                      --default-author :string
+                      --default-license :string})
+   [--reset -r] (effect (fn [&] 
+                          (print "This will reset your `.junorc` file to default. Are you sure? [y/N]")
+                          (let [input (getline)]
+                            (when (= "y\n" (string/ascii-lower input))
+                              (manage-config-map! :reset)))))] 
+          (let [config (manage-config-map! :load)] 
+            (cond
+              target (manage-config-map! :save :config-map (put (struct/to-table config) ;target)) 
+              (print-defaults config))))
 
 (cmd/main
  (cmd/group 
@@ -116,6 +147,10 @@
     joke handle-joke
     license handle-license
     new handle-new
-    configure handle-configure
+    config handle-configure
     --version handle-version
     -v handle-version))
+
+
+(defn test [a &opt b &named c]
+  [a b c])
