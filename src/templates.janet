@@ -163,6 +163,10 @@
                                             font: "Times New Roman")
                                         #block(it.body)
                                     ]
+                                                                   
+                                    set enum( 
+                                        indent: 1.65em
+                                    )
                                 
                                     set par(
                                         leading: 0.5em
