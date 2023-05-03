@@ -2,6 +2,8 @@
 (import cmd)
 (import jdn)
 (import spork/path)
+(use judge)
+(use sh)
 
 # TODO: (#8): Implement `adopt` feature within user templating engine
 
@@ -84,6 +86,18 @@
 
 (cmd/defn handle-version "" []
   (print "Version " version))
+
+(defn load-config-file :tested [config-path]
+  (jdn/decode (slurp config-path)))
+
+(defn get-config-map :tested [&named config-root config-name]
+  (let [homedir (or config-root (os/getenv "HOME"))
+        config-path (path/join homedir ".config" (or config-name ".junorc"))]
+    (if (os/stat config-path)
+      (load-config-file config-path)
+      (do ($ "mkdir" (path/join homedir ".config") "-p")
+          (spit config-path (jdn/encode {}))
+          {}))))
 
 (cmd/defn handle-configure "Configure defaults (like author, template, and license) that Juno will use elsewhere." []
   (print "Sorry, this isn't implemented yet!"))
