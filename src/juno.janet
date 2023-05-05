@@ -100,7 +100,8 @@
 
 (defn manage-config-map! [action &named config-map config-root config-name]
   (let [homedir (or config-root (os/getenv "HOME"))
-        config-path (path/join homedir ".config" (or config-name ".junorc"))]
+        config-path (path/join homedir ".config" (or config-name ".junorc"))
+        config-map (or config-map {})]
     (ensure-config-file! config-path)
     (case action
       :load (load-config-file! config-path)
@@ -150,7 +151,3 @@
     config handle-configure
     --version handle-version
     -v handle-version))
-
-
-(defn test [a &opt b &named c]
-  [a b c])

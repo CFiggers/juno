@@ -127,11 +127,61 @@
   (test (manage-config-map! :load :config-root "./") {:default-template "typst"}))
 
 (deftest "Test config, without arguments"
-  (test ($< "./build/juno" "config")))
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default author is set to: Caleb Figgers\n"))
 
-# (deftest: test-project "Test config, without arguments"
-#   (test ($< "./build/juno" "config" "--default-template=typst"))
-#   (test ($< "./build/juno" "config" "--default-template" "typst")))
+(deftest "Test config, load and cache, reset, restore cashed"
+  (def start-config (manage-config-map! :load))
+  (test start-config @{:default-author "Caleb Figgers"})
+  (manage-config-map! :reset)
+  (test (manage-config-map! :load) {})
+  (manage-config-map! :save :config-map start-config)
+  (test (manage-config-map! :load) @{:default-author "Caleb Figgers"}))
+
+(deftest-type cache-real
+  :setup (fn [&] (manage-config-map! :load))
+  :reset (fn [&] (manage-config-map! :reset))
+  :teardown (fn [start-config] (manage-config-map! :save :config-map start-config)))
+
+(deftest: cache-real "Test auto-caching" [_]
+  (test (manage-config-map! :load) {}))
+
+(deftest: cache-real "Test auto-resetting" [_]
+  (test (manage-config-map! :load) {})
+  (manage-config-map! :save :config-map {:fail "dumb"})
+  (test (manage-config-map! :load) {:fail "dumb"}))
+
+(deftest: cache-real "Test auto-caching" [_]
+  (test (manage-config-map! :load) {}))
+
+(deftest: cache-real "Test config, save a default template 1" [_] 
+  (test ($< "./build/juno" "config" "--default-template=typst") "")
+  (test (manage-config-map! :load) @{:default-template "typst"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default template is set to: typst\n"))
+
+(deftest: cache-real "Test config, save a default template 2" [_]  
+  (test ($< "./build/juno" "config" "--default-template" "typst") "") 
+  (test (manage-config-map! :load) @{:default-template "typst"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default template is set to: typst\n"))
+
+(deftest: cache-real "Test config, save a default author 1" [_] 
+  (test ($< "./build/juno" "config" "--default-author=Caleb Figgers") "")
+  (test (manage-config-map! :load) @{:default-author "Caleb Figgers"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default author is set to: Caleb Figgers\n"))
+
+(deftest: cache-real "Test config, save a default author 2" [_]  
+  (test ($< "./build/juno" "config" "--default-author" "Caleb Figgers") "") 
+  (test (manage-config-map! :load) @{:default-author "Caleb Figgers"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default author is set to: Caleb Figgers\n"))
+
+(deftest: cache-real "Test config, save a default license 1" [_] 
+  (test ($< "./build/juno" "config" "--default-license=bsd") "") 
+  (test (manage-config-map! :load) @{:default-license "bsd"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default license is set to: bsd\n"))
+
+(deftest: cache-real "Test config, save a default license 2" [_] 
+  (test ($< "./build/juno" "config" "--default-license" "bsd") "") 
+  (test (manage-config-map! :load) @{:default-license "bsd"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default license is set to: bsd\n"))
 
 # Test `license` subcommand 
 
