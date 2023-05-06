@@ -183,6 +183,48 @@
   (test (manage-config-map! :load) @{:default-license "bsd"})
   (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default license is set to: bsd\n"))
 
+(deftest: cache-real "Test config, save a default template and a default author" [_]  
+  (test ($< "./build/juno" "config" "--default-author" "Caleb Figgers" "--default-template" "typst") "") 
+  (test (manage-config-map! :load) @{:default-author "Caleb Figgers" :default-template "typst"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default author is set to: Caleb Figgers\n- Your default template is set to: typst\n"))
+
+(deftest: cache-real "Test config, save a default template, author, and license" [_]  
+  (test ($< "./build/juno" "config" "--default-author" "Caleb Figgers" "--default-template" "typst" "--default-license" "bsd") "") 
+  (test (manage-config-map! :load)
+    @{:default-author "Caleb Figgers"
+      :default-license "bsd"
+      :default-template "typst"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default author is set to: Caleb Figgers\n- Your default license is set to: bsd\n- Your default template is set to: typst\n"))
+
+(deftest: cache-real "Test config, save a default license twice" [_] 
+  (test ($< "./build/juno" "config" "--default-license=mit") "") 
+  (test (manage-config-map! :load) @{:default-license "mit"})
+  (test ($< "./build/juno" "config" "--default-license=bsd") "")
+  (test (manage-config-map! :load) @{:default-license "bsd"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default license is set to: bsd\n"))
+
+(deftest: cache-real "Test config, save a default template, author, and license and then reset 1" [_]  
+  (test ($< "./build/juno" "config" "--default-author" "Caleb Figgers" "--default-template" "typst" "--default-license" "bsd") "") 
+  (test (manage-config-map! :load)
+    @{:default-author "Caleb Figgers"
+      :default-license "bsd"
+      :default-template "typst"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default author is set to: Caleb Figgers\n- Your default license is set to: bsd\n- Your default template is set to: typst\n")
+  (test ($< "./build/juno" "config" "--reset" "--force") "")
+  (test (manage-config-map! :load) {})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- You have no user defaults set\n"))
+
+(deftest: cache-real "Test config, save a default template, author, and license and then reset 2" [_]  
+  (test ($< "./build/juno" "config" "--default-author" "Caleb Figgers" "--default-template" "typst" "--default-license" "bsd") "") 
+  (test (manage-config-map! :load)
+    @{:default-author "Caleb Figgers"
+      :default-license "bsd"
+      :default-template "typst"})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- Your default author is set to: Caleb Figgers\n- Your default license is set to: bsd\n- Your default template is set to: typst\n")
+  (test ($< "./build/juno" "config" "-rf") "")
+  (test (manage-config-map! :load) {})
+  (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- You have no user defaults set\n"))
+
 # Test `license` subcommand 
 
 (deftest: test-project "Test `license` subcommand, without arguments" [_]
@@ -196,3 +238,5 @@
   (os/cd "test-project") 
   (test (= ($< "../build/juno" "license") (string "- Creating file LICENSE at " (os/cwd) "\n")) true)
   (os/cd ".."))
+
+# TODO: Test that defaults actually apply correctly
