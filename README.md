@@ -33,7 +33,7 @@ $ ls
 
 Required: [jpm](https://github.com/janet-lang/jpm).
 
-1. In the `juno` repo, run `jpm build`.
+1. In the `juno` repo, run `jpm deps -l && jpm build -l`.
 
 2. See a new `build` directory folder:
 
@@ -42,7 +42,7 @@ $ ls
 ... build ...
 ```
 
-3. Put or symlink the `juno` binary in `build` onto your `$PATH`.
+3. Put or symlink the `juno` binary in `build` onto your `$PATH`. A common way to accomplish this is to put a new item in your `~/bin` folder, which is probably already on your `$PATH`.
 
       For e.g., using `ln` to create a symlink: `$ sudo ln -s /usr/bin/juno [path to juno project root]/build/juno`
 
@@ -53,12 +53,14 @@ $ ls
 ## Roadmap
 
 ### TODO
-- [ ] `license` subcommand for adding/updating licenses based on Github's API
+- [ ] Improved `license` subcommand for adding/updating licenses based on Github's API
 - [ ] User-defined templates and automated template adoption from existing directories
 - [ ] Interactive collection of parameters if needed but not provided by option flags
 
 ### DONE
-- [x] ~~Dynamic tweaks to templates based on flags (like `--executable`/`-e` to automatically include a `(declare-executable)` in `project.janet` but leave the rest of the template the same)~~
+- [x] MVP (Creating projects with `new`, add a license with `license`, tell a joke with `joke`)
+- [x] Dynamic tweaks to templates based on flags (like `--executable`/`-e` to automatically include a `(declare-executable)` in `project.janet` but leave the rest of the template the same)
+- [x] Persistent user configuration of template defaults using `juno config` and related subcommands
 
 ## Contributing
 
@@ -73,6 +75,7 @@ Here are a few that already exist in [Janet](https://github.com/janet-lang/janet
 - [jeep](https://github.com/pyrmont/jeep)
 - [newt](https://github.com/yumaikas/newt)
 - [michael](https://git.sr.ht/~pepe/michael)
+- [jpm](https://github.com/janet-lang/jpm)
 
 Compared with these, the biggest difference with `juno` is the data-oriented approach to project templating. Also, the (planned) `adopt` command is distinct (to my knowledge, even among project scaffolding frameworks more broadly).
 

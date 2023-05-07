@@ -76,13 +76,13 @@
 (defn serve-new [proj-name &named opts]
   (let [config (manage-config-map! :load) 
         opts (-> opts
-                 (update :template |(or (config :default-template) $))
-                 (update :author |(or (config :default-author) $))
-                 (update :license |(or (config :default-license) $)))
+                 (update :template |(or $ (config :default-template)))
+                 (update :author |(or $ (config :default-author)))
+                 (update :license |(or $ (config :default-license))))
         dir (path/join (or (opts :directory) ".") proj-name)
         temp ((templates/templates (keyword (or (opts :template) "default"))) proj-name opts)]
     (if temp
-      (do (print "Creating a new Janet project following the " (opts :template) " template")
+      (do (print "Creating a new Janet project following the " (or (opts :template) "default") " template")
           (print)
           (os/mkdir dir)
           (os/cd dir)
@@ -94,11 +94,11 @@
 (cmd/defn handle-new "Make a new project directory." 
   [[--directory --dir -d] (optional :string ".") "The relative directory path where you'd like juno to create the new project. Defaults to the current dir."
    [--executable -e] (flag) "Indicate to the template to include features for building executables, if it has any."
-   [--license -l] (optional :string "mit") "Specify a license to include in the project. Defaults to MIT."
+   [--license -l] (optional :string) "Specify a license to include in the project. Defaults to MIT."
    [--author -a] (optional :string) "Specify the author name to use to the copyright field in the LICENSE file."
    [--description -D] (optional :string) "Specify the description to use in the template's project description fields, if it has any."
    [--test -t] (flag) "Indicate to the template to include features for testing, if it has any."
-   template (optional :string "default") "Tell juno what template to use to scaffold your new project. Defaults to a simple Janet project."
+   template (optional :string) "Tell juno what template to use to scaffold your new project. Defaults to a simple Janet project."
    project-name :string] "Specify the project name to use in the template's project name fields, if it has any."
   (serve-new project-name
              :opts @{:executable executable
@@ -134,10 +134,10 @@
             (manage-config-map! :reset)
             (print "Cancelled"))))))
 
-(cmd/defn handle-configure "Configure defaults (like author, template, and license) that Juno will use elsewhere."
-  [--default-author (optional :string)
-   --default-template (optional :string)
-   --default-license (optional :string)
+(cmd/defn handle-configure "Configure defaults (like author, template, and license) that Juno will use elsewhere. Saves configs to `~/.config/.junorc`."
+  [--default-author (optional :string) "Set a `:default-author`. `juno new` will pass this value to templates when no `--author` is provided."
+   --default-template (optional :string) "Set a `:default-template`. `juno new` will default to this value if no `--template` is provided."
+   --default-license (optional :string) "Set a `:default-license`. `juno new` will pass this value to templates when no `--license` is provided."
    [--force -f] (flag)
    [--reset -r] (flag)] 
           (if reset

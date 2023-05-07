@@ -14,6 +14,9 @@
    "test-project/.gitignore"
    "test-project/project.janet"])
 
+(def name-expected
+  (or ((manage-config-map! :load) :default-author) "[name]"))
+
 (deftest-type test-project
   # Setup: Rebuild juno and remove test-project, if exists
   :setup (fn [] (do ($ "jpm" "clean" > :null)
@@ -54,7 +57,7 @@
         (test (nil? (os/stat file)) false))
   
   (test (string/find "declare-executable" (slurp "test-project/project.janet")) nil)
-  (test (string/find "[name]" (slurp "test-project/LICENSE")) 34)
+  (test (string/find name-expected (slurp "test-project/LICENSE")) 34)
   (test (string/find "TODO: Write a cool description" (slurp "test-project/project.janet")) 56)
   (test (nil? (os/stat "test-project/test")) true))
 
@@ -99,7 +102,7 @@
         (test (nil? (os/stat file)) false)) 
 
   (test (string/find "Rumplestiltskin" (slurp "test-project/LICENSE")) 35)
-  (test (string/find "[name]" (slurp "test-project/LICENSE")) nil))
+  (test (string/find name-expected (slurp "test-project/LICENSE")) nil))
 
 (deftest: test-project "Test new project, with `--description` parameter" [_]
   (test ($< "./build/juno" "new" "test-project" "--description" "\"A cool test project\"") "Creating a new Janet project following the default template\n\n- Creating file README.md at /home/caleb/projects/janet/juno/test-project\n- Creating file LICENSE at /home/caleb/projects/janet/juno/test-project\n- Creating file project.janet at /home/caleb/projects/janet/juno/test-project\n- Creating file test-project.janet at /home/caleb/projects/janet/juno/test-project/src\n- Creating file .gitignore at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
@@ -225,6 +228,20 @@
   (test (manage-config-map! :load) {})
   (test ($< "./build/juno" "config") "Your current Juno configuration is as follows:\n\n- You have no user defaults set\n"))
 
+# Test that defaults actually apply correctly
+
+(deftest: cache-real "Test defaults, template" [_]
+  ($< "./build/juno" "config" "--default-template" "typst")
+  (test ($< "./build/juno" "new" "test-project") "Creating a new Janet project following the typst template\n\n- Creating file prep_template.typ at /home/caleb/projects/janet/juno/test-project/lib\n- Creating file index.typ at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
+  ($ "rm" "-rf" "test-project"))
+
+(deftest: cache-real "Test defaults, author" [_]
+  ($< "./build/juno" "config" "--default-author" "Caleb Figgers")
+  (test ($< "./build/juno" "new" "test-project") "Creating a new Janet project following the default template\n\n- Creating file README.md at /home/caleb/projects/janet/juno/test-project\n- Creating file LICENSE at /home/caleb/projects/janet/juno/test-project\n- Creating file project.janet at /home/caleb/projects/janet/juno/test-project\n- Creating file test-project.janet at /home/caleb/projects/janet/juno/test-project/src\n- Creating file .gitignore at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
+  (test (string/find "Caleb Figgers" (slurp "test-project/LICENSE")) 34)
+  (test (string/find "[name]" (slurp "test-project/LICENSE")) nil)
+  ($ "rm" "-rf" "test-project"))
+
 # Test `license` subcommand 
 
 (deftest: test-project "Test `license` subcommand, without arguments" [_]
@@ -239,4 +256,3 @@
   (test (= ($< "../build/juno" "license") (string "- Creating file LICENSE at " (os/cwd) "\n")) true)
   (os/cd ".."))
 
-# TODO: Test that defaults actually apply correctly
