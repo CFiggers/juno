@@ -129,8 +129,32 @@
                                 #let body(doc) = {
                                     set page ( 
                                         paper: "us-letter",
-                                        numbering: "1",
-                                        margin: (x: 1in, top: 1in, bottom: 0.9in)
+                                        margin: (x: 1in, top: 1in, bottom: 0.9in),
+                                        footer: [
+                                            #let cell = rect.with(
+                                                width: 100%,
+                                                stroke: none
+                                            )
+                                    
+                                            #let timestamp = locate(loc => 
+                                                "[" 
+                                                + str(counter(page).at(loc).first() * 3) 
+                                                + ":00]"
+                                            )
+                                    
+                                            #grid(
+                                                columns: (33%, 33%, 40%),
+                                                rows: (auto),
+                                                gutter: 3pt,
+                                                cell[],
+                                                cell[
+                                                    #align(center)[#counter(page).display("1")]
+                                                ],
+                                                cell[
+                                                    #align(right)[#timestamp]
+                                                ]
+                                            )
+                                        ]
                                     )
                                 
                                     show heading.where(level:1): it => [
