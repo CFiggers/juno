@@ -1,6 +1,8 @@
 (import /src/templates)
+(import /src/http)
 (import cmd)
 (import jdn)
+(import json)
 (import spork/path)
 (use judge)
 (use sh)
@@ -25,13 +27,18 @@
   [] 
   (print "What's brown and sticky? A stick!"))
 
+(defn request-license [search-term]
+  nil)
+
 (cmd/defn handle-license 
   "Add a license to the current directory. Expects an operation name and a license name (such as `mit`)." 
   [license-type (optional :string "mit")]
   (if-let [got-license (templates/licenses-cache (keyword license-type))]
     (create-file! "LICENSE" got-license)
-    (do (printf "  ! Tried to get a %s license, but couldn't !" license-type)
-        (print "TODO: Add an awesome license here"))))
+    (if-let [returned-license (request-license license-type)]
+      (create-file! "LICENSE" returned-license)
+      (do (printf "  ! Tried to get a %s license, but couldn't !" license-type)
+          (print "TODO: Add an awesome license here")))))
 
 (defn ensure-config-file! [config-path]
   (unless (os/stat config-path)
