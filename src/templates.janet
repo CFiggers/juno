@@ -219,6 +219,13 @@
                                   set block(spacing: 0.5em)
                                   body
                                 })
+                                                                   
+                                #let indent(body) = box(
+                                    inset: (x: 1.65em, y:0pt), width: 100% + 1.65em,
+                                    {
+                                        body
+                                    }
+                                )
                                 ```}}} 
    :index {:type :file
            :name "index.typ"
