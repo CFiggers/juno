@@ -188,6 +188,10 @@
                                         #block(it.body)
                                     ]
                                                                    
+                                    set list(
+                                        indent: 1.65em
+                                    ) 
+                                                                   
                                     set enum( 
                                         indent: 1.65em
                                     )
