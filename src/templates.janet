@@ -1,20 +1,19 @@
 (def licenses-cache
   {:mit  
-   ```
-   MIT License
-
+   ```MIT License
+   
    Copyright (c) [year] [name]
-
+   
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
    in the Software without restriction, including without limitation the rights
    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
    copies of the Software, and to permit persons to whom the Software is
    furnished to do so, subject to the following conditions:
-
+   
    The above copyright notice and this permission notice shall be included in all
    copies or substantial portions of the Software.
-
+   
    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,8 +38,7 @@
    :gitignore {:type :file
                :name ".gitignore"
                :contents 
-               ```
-               .clj-kondo
+               ```.clj-kondo
                .lsp
                .vscode
                build
@@ -49,17 +47,16 @@
             :name "README.md"
             :contents
             (string/format
-             ```
-             # %s
-
+             ```# %s
+             
              A new [Janet](janet-lang/janet) project. The sky is the limit!
              
              ## Getting Started 
-
+             
              1. <!-- TODO: Give some helpful usage steps -->
-
+             
              2. 
-
+             
              3. 
              ```
              proj-name)}  
@@ -68,8 +65,7 @@
          :contents {:main {:type :file 
                            :name (string/format "%s.janet" proj-name) 
                            :contents 
-                           ```
-                           # Uncomment to use `janet-lang/spork` helper functions.
+                           ```# Uncomment to use `janet-lang/spork` helper functions.
                            # (use spork)
                            
                            (defn main [& args]
@@ -80,8 +76,7 @@
                   :contents 
                   (string 
                    (string/format
-                    ```
-                    (declare-project
+                    ```(declare-project
                       :name "%s"
                       :description "%s")
                     ```
@@ -90,7 +85,7 @@
                    (when (opts :executable)
                      (string/format
                        ``` 
-                          
+                       
                        (declare-executable
                          :name "%s"
                          :entry "src/%s.janet"
@@ -105,15 +100,14 @@
              :contents {:test1 {:type :file 
                                 :name "test.janet" 
                                 :contents 
-                                ```
-                                (use judge) 
+                                ```(use judge) 
                                 # (import spork/test)
                                 
                                 (def start (os/clock))
-                                 
+                                
                                 (deftest "name this"
                                   (test true true))
-     
+                                
                                 (deftest final-time
                                   (print "Elapsed time: " (- (os/clock) start) " seconds"))
                                 ```}}} 
@@ -125,8 +119,7 @@
               :contents {:main {:type :file 
                                 :name "prep_template.typ" 
                                 :contents 
-                                ```
-                                #let body(doc) = {
+                                ```#let body(doc) = {
                                     set page ( 
                                         paper: "us-letter",
                                         margin: (x: 1in, top: 1in, bottom: 0.9in),
@@ -135,13 +128,13 @@
                                                 width: 100%,
                                                 stroke: none
                                             )
-                                    
+                                
                                             #let timestamp = locate(loc => 
                                                 "[" 
                                                 + str(counter(page).at(loc).first() * 3) 
                                                 + ":00]"
                                             )
-                                    
+                                
                                             #grid(
                                                 columns: (33%, 33%, 40%),
                                                 rows: (auto),
@@ -187,7 +180,7 @@
                                             font: "Times New Roman")
                                         #block(it.body)
                                     ]
-                                                                   
+                                
                                     set enum( 
                                         indent: 1.65em
                                     )
@@ -223,8 +216,7 @@
    :index {:type :file
            :name "index.typ"
            :contents 
-           ```
-           #import "./lib/prep_template.typ": *
+           ```#import "./lib/prep_template.typ": *
            #show: body 
            
            = 

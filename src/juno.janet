@@ -3,22 +3,42 @@
 (import jdn)
 (import spork/path)
 (use judge)
-(use sh)
 
 # TODO: (#8): Implement `adopt` feature within user templating engine
 
 (def version "0.0.3")
 
-(defn create-folder! 
-  "Wrap os/mkdir to have ! in fn name indicating stateful change"
-  [path]
-  (os/mkdir path))
+(defmacro recursively [osfn path]
+  (assert (or (= osfn 'os/mkdir) (= osfn 'os/rmdir))
+          "This macro only works with `os/mkdir` and `os/rmdir`")
+  (with-syms [$path $osfn]
+    ~(let [,$path ,path
+           ,$osfn ,osfn
+           patha (string/replace-all "\\" "/" ,$path)
+           parts (string/split "/" patha)
+           paths (accumulate path/join "." parts)
+           pathsp (if (= ,$osfn os/rmdir) (reverse paths) paths)]
+       (each p pathsp
+         (case ,$osfn
+           os/mkdir (eprint "  - Creating " p)
+           os/rmdir (eprint "  - Removing " p))
+         (,$osfn p)))))
+
+(deftest "test mkdir-recursive"
+  (recursively os/mkdir "a/nested/test/path")
+  (test (truthy? (os/stat "a/nested/test/path")) true)
+  (recursively os/rmdir "a/nested/test/path")
+  (test (truthy? (os/stat "a/nested/test/path")) false))
+
+(deftest "test mkdir-recursive"
+  (recursively os/mkdir (path/join "a" "nested" "test" "path"))
+  (test (truthy? (os/stat "a/nested/test/path")) true)
+  (recursively os/rmdir (path/join "a" "nested" "test" "path"))
+  (test (truthy? (os/stat "a/nested/test/path")) false))
 
 (defn create-file! [path &opt contents]
   (print "- Creating file " path " at " (os/cwd))
-  (os/shell (string "touch " path))
-  (when contents
-    (spit path contents)))
+  (spit path (or contents "")))
 
 (cmd/defn handle-joke 
   "Tell one specific joke. Juno doesn't know any good ones." 
@@ -35,7 +55,7 @@
 
 (defn ensure-config-file! [config-path]
   (unless (os/stat config-path)
-    ($ "mkdir" (path/dirname config-path) "-p")
+    (recursively os/mkdir (path/dirname config-path))
     (spit config-path (jdn/encode {}))))
 
 (defn load-config-file! [config-path]
@@ -45,7 +65,7 @@
   (spit config-path (jdn/encode config-map)))
 
 (defn manage-config-map! [action &named config-map config-root config-name]
-  (let [homedir (or config-root (os/getenv "HOME"))
+  (let [homedir (or config-root (or (os/getenv "HOME") (os/getenv "HOMEPATH")))
         config-path (path/join homedir ".config" (or config-name ".junorc"))
         config-map (or config-map {})]
     (ensure-config-file! config-path)
@@ -63,7 +83,7 @@
          :type s-type} step]
     (case s-type
       :file (create-file! name contents)
-      :folder (do (create-folder! name)
+      :folder (do (os/mkdir name)
                   (os/cd name)
                   (deploy-template contents)
                   (os/cd ".."))

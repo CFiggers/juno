@@ -67,7 +67,7 @@
   (each file expected-files
         (test (nil? (os/stat file)) false))
 
-  (test (string/find "declare-executable" (slurp "test-project/project.janet")) 95))
+  (test (string/find "declare-executable" (slurp "test-project/project.janet")) 92))
 
 (deftest: test-project "Test new default project, with `-e` flag" [_]
   (test ($< "./build/juno" "new" "test-project" "-e") "Creating a new Janet project following the default template\n\n- Creating file README.md at /home/caleb/projects/janet/juno/test-project\n- Creating file LICENSE at /home/caleb/projects/janet/juno/test-project\n- Creating file project.janet at /home/caleb/projects/janet/juno/test-project\n- Creating file test-project.janet at /home/caleb/projects/janet/juno/test-project/src\n- Creating file .gitignore at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
@@ -75,7 +75,7 @@
   (each file expected-files
         (test (nil? (os/stat file)) false))
 
-  (test (string/find "declare-executable" (slurp "test-project/project.janet")) 95))
+  (test (string/find "declare-executable" (slurp "test-project/project.janet")) 92))
 
 (deftest: test-project "Test new default project, with `--test` flag" [_]
   (test ($< "./build/juno" "new" "test-project" "--test") "Creating a new Janet project following the default template\n\n- Creating file README.md at /home/caleb/projects/janet/juno/test-project\n- Creating file test.janet at /home/caleb/projects/janet/juno/test-project/test\n- Creating file LICENSE at /home/caleb/projects/janet/juno/test-project\n- Creating file project.janet at /home/caleb/projects/janet/juno/test-project\n- Creating file test-project.janet at /home/caleb/projects/janet/juno/test-project/src\n- Creating file .gitignore at /home/caleb/projects/janet/juno/test-project\n\nSuccess! Thank you, please come again\n")
