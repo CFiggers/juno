@@ -119,7 +119,8 @@
               :contents {:main {:type :file 
                                 :name "prep_template.typ" 
                                 :contents 
-                                ```#let body(doc) = {
+                                ```
+                                #let body(doc) = {
                                     set page ( 
                                         paper: "us-letter",
                                         margin: (x: 1in, top: 1in, bottom: 0.9in),
@@ -179,8 +180,12 @@
                                             weight: "regular",
                                             font: "Times New Roman")
                                         #block(it.body)
-                                    ]
-                                
+                                    ] 
+                                    
+                                    set list(
+                                        indent: 1.65em
+                                    )
+                                                                
                                     set enum( 
                                         indent: 1.65em
                                     )
@@ -212,6 +217,13 @@
                                   set block(spacing: 0.5em)
                                   body
                                 })
+                                                                   
+                                #let indent(body) = box(
+                                    inset: (x: 1.65em, y:0pt), width: 100% + 1.65em,
+                                    {
+                                        body
+                                    }
+                                )                                                                   
                                 ```}}} 
    :index {:type :file
            :name "index.typ"
