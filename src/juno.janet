@@ -6,7 +6,7 @@
 
 # TODO: (#8): Implement `adopt` feature within user templating engine
 
-(def version "0.0.3")
+(def version "0.0.3-b")
 
 (defmacro recursively [osfn path]
   (assert (or (= osfn 'os/mkdir) (= osfn 'os/rmdir))
@@ -53,16 +53,12 @@
     (do (printf "  ! Tried to get a %s license, but couldn't !" license-type)
         (print "TODO: Add an awesome license here"))))
 
-(defn ensure-config-file! [config-path]
-  (unless (os/stat config-path)
-    (recursively os/mkdir (path/dirname config-path))
-    (spit config-path (jdn/encode {}))))
-
-(defn load-config-file! [config-path]
-  (jdn/decode (slurp config-path)))
-
-(defn save-config-file! [config-path config-map]
-  (spit config-path (jdn/encode config-map)))
+(defmacro ensure-config-file! [config-path]
+  (with-syms [$cp]
+    ~(let [,$cp ,config-path]
+       (unless (os/stat ,$cp)
+         (recursively os/mkdir (path/dirname ,$cp))
+         (spit ,$cp (jdn/encode {}))))))
 
 (defn manage-config-map! [action &named config-map config-root config-name]
   (let [homedir (or config-root (or (os/getenv "HOME") (os/getenv "HOMEPATH")))
@@ -70,8 +66,8 @@
         config-map (or config-map {})]
     (ensure-config-file! config-path)
     (case action
-      :load (load-config-file! config-path)
-      :save (save-config-file! config-path config-map)
+      :load (jdn/decode (slurp config-path))
+      :save (spit config-path (jdn/encode config-map))
       :reset (spit config-path (jdn/encode {})))))
 
 # Declare function to allow reference out of order
