@@ -132,7 +132,7 @@
                                 
                                             #let timestamp = locate(loc => 
                                                 "[" 
-                                                + str(counter(page).at(loc).first() * 3) 
+                                                + str (calc.floor (counter (page).at (loc).first () * 3.5))
                                                 + ":00]"
                                             )
                                 
