@@ -6,7 +6,7 @@
 
 # TODO: (#8): Implement `adopt` feature within user templating engine
 
-(def version "0.0.3-b")
+(def version "0.0.3-c")
 
 (defmacro recursively [osfn path]
   (assert (or (= osfn 'os/mkdir) (= osfn 'os/rmdir))
@@ -126,7 +126,7 @@
                      :test test
                      :description description}))
 
-(cmd/defn handle-version "" []
+(defn handle-version "" []
   (print "Version " version))
 
 (defn print-defaults [config-map] 
@@ -167,20 +167,27 @@
                 (print-defaults config)
                 (manage-config-map! :save :config-map targets)))))
 
-(cmd/main
- (cmd/group 
-  (string/format
-    ``
-    Juno v%s
-    
-    Usage: juno [subcommand] {positional arguments} [options] 
-    
-    A simple CLI tool for creating new project directories. Defaults to a basic Janet project.
-    ``
-    version)
-    joke handle-joke
-    license handle-license
-    new handle-new
-    config handle-configure
-    --version handle-version
-    -v handle-version))
+(def main-group 
+  (cmd/group 
+    (string/format
+      ``
+      Juno v%s
+      
+      Usage: juno <subcommand> {positional arguments} [options] 
+      
+      A simple CLI tool for creating new project directories. Defaults to a basic Janet project.
+      ``
+      version)
+      joke handle-joke
+      license handle-license
+      new handle-new
+      config handle-configure))
+
+(defn main [& args]
+  (let [normalized-args (cmd/args)]
+    (cond
+      (deep= normalized-args @["--help"])      (do (cmd/run main-group ["help"]) (break))
+      (deep= normalized-args @["-h"])          (do (cmd/run main-group ["help"]) (break))
+      (has-value? normalized-args "--version") (do (handle-version)              (break))
+      (has-value? normalized-args "-v")        (do (handle-version)              (break)))
+    (cmd/run main-group (cmd/args))))
