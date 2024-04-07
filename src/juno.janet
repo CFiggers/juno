@@ -1,6 +1,5 @@
 (import /src/templates)
 (import cmd)
-(import jdn)
 (import spork/path)
 (use judge)
 
@@ -58,7 +57,7 @@
     ~(let [,$cp ,config-path]
        (unless (os/stat ,$cp)
          (recursively os/mkdir (path/dirname ,$cp))
-         (spit ,$cp (jdn/encode {}))))))
+         (spit ,$cp (string/format "%j" {}))))))
 
 (defn manage-config-map! [action &named config-map config-root config-name]
   (let [homedir (or config-root (or (os/getenv "HOME") (os/getenv "HOMEPATH")))
@@ -66,9 +65,9 @@
         config-map (or config-map {})]
     (ensure-config-file! config-path)
     (case action
-      :load (jdn/decode (slurp config-path))
-      :save (spit config-path (jdn/encode config-map))
-      :reset (spit config-path (jdn/encode {})))))
+      :load (parse (slurp config-path))
+      :save (spit config-path (string/format "%j" config-map))
+      :reset (spit config-path (string/format "%j" {})))))
 
 # Declare function to allow reference out of order
 (varfn deploy-template [])
