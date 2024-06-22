@@ -6,7 +6,7 @@
 
 # TODO: (#8): Implement `adopt` feature within user templating engine
 
-(def version "0.0.3-c")
+(def version "0.0.3-d")
 
 (defmacro recursively [osfn path]
   (assert (or (= osfn 'os/mkdir) (= osfn 'os/rmdir))
@@ -151,9 +151,9 @@
             (print "Cancelled"))))))
 
 (cmd/defn handle-configure "Configure defaults (like author, template, and license) that Juno will use elsewhere. Saves configs to `~/.config/.junorc`."
-  [--default-author (optional :string) "Set a `:default-author`. `juno new` will pass this value to templates when no `--author` is provided."
-   --default-template (optional :string) "Set a `:default-template`. `juno new` will default to this value if no `--template` is provided."
-   --default-license (optional :string) "Set a `:default-license`. `juno new` will pass this value to templates when no `--license` is provided."
+  [--default-author (optional :string) "Set a `:default-author` in .junorc. `juno new` will pass this value to templates when no `--author` is provided."
+   --default-template (optional :string) "Set a `:default-template` in .junorc. `juno new` will default to this value if no `--template` is provided."
+   --default-license (optional :string) "Set a `:default-license` in .junorc. `juno new` will pass this value to templates when no `--license` is provided."
    [--force -f] (flag)
    [--reset -r] (flag)] 
           (if reset
@@ -169,15 +169,28 @@
 
 (def main-group 
   (cmd/group 
-    (string/format
+    {:doc (string/format
       ``
       Juno v%s
       
       Usage: juno <subcommand> {positional arguments} [options] 
       
-      A simple CLI tool for creating new project directories. Defaults to a basic Janet project.
+        A simple CLI tool for creating new project directories. Defaults to a basic Janet project.
       ``
       version)
+     :epilogue 
+      ``
+      General options:
+      
+        -h, --help   Print command-specific usage
+      
+      Examples:
+      
+        $ juno new new-project-name
+        $ juno new template new-project-name
+        $ juno joke
+      
+      ``}
       joke handle-joke
       license handle-license
       new handle-new
