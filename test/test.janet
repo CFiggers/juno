@@ -37,8 +37,8 @@
 # Test --version command
 
 (deftest: test-project "Test `--version` command" [_]
-  (test ($< "./build/juno" "--version") "Version 0.0.3\n")
-  (test ($< "./build/juno" "-v") "Version 0.0.3\n"))
+  (test ($< "./build/juno" "--version") "Version 0.0.3-d\n")
+  (test ($< "./build/juno" "-v") "Version 0.0.3-d\n"))
 
 # Test `joke` subcommand
 
